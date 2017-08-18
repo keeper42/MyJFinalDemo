@@ -1,0 +1,39 @@
+1. web.xml
+	<param-value>com.demo.config.DemoConfig</param-value>
+	
+2. Config
+	configConstant: 加载必要配置，如数据库配置文件，devMode是开发模式常量，在开发模式下，JFinal会对每次请求request输出报告
+		// PropKit, 随后可用PropKit.get(...)取值
+		PropKit.use("a_little_config.txt");
+	configRoute: ->Controller
+	configEngine: 配置模板引擎
+	configPlugin: 配置插件，如数据库连接池等插件，
+		// 配置c3p0数据库连接池插件
+		DruidPlugin druidPlugin = new DruidPlugin(PropKit.get("jdbcUrl"), PropKit.get("user"), PropKit.get("password").trim());
+		me.add(druidPlugin);
+		/**
+		 * ActiveRecord作为JFinal的Plugin而存在，所以需要使用JFinalConfig中配置ActiveRecordPlugin
+		 * DruidPlugin 与 ActiveRecordPlugin， 前者是 druid 数据源插件，后者是 ActiveRecrod 支持插件。
+		 * 另外，以上代码中 arp.addMapping("user", User.class)，表的主键名为默认为"id"，如果主键名称为 "user_id"则需要手动指定，如： arp.addMapping("user", "user_id", User.class)。
+		 */
+ 		ActiveRecordPlugin arp = new ActiveRecordPlugin(druidPlugin);
+		arp.addMapping("blog", "id", Blog.class);
+		me.add(arp);
+
+3. Controller
+	index: render、setAttr
+	// save 与 update 的业务逻辑在实际应用中应该放在 serivce 之中
+	Validator: 验证器，访问数据库时验证是否属于业务层的事， 利用 actionKey 或者 controllerKey 建议校证分支持
+	Intercepter: 只能拦截对action的请求，对静态资源的请求是无法感知的，并且拦截器无法改变target参数，当拦截发生时很多事情已经发生了
+	Handler: 接管所有请求，包括静态请求，并且可以改变请求所指向的资源参数如target，改变target参数可做url伪静态或url重写
+	
+	Service: 如果项目规模大并且复杂度高可以引入 Service 层，否则所有业务写在 Model 中就可以
+	Model: 业务层，可以根据需要引入单独的业务层，通常不用static方法，因为业务通常是相对于当前对象而言的
+	Controller: 1) 接收参数	2) 调用业务	3) 使用setAttr存入request	4) render 
+	
+4. Model
+	BaseModel作为类模板，IBean为标记型接口，标记添加了 getter、setter 方法后的 Model
+	
+5. Service
+	DAO层， sql 与业务逻辑写在 Service 中
+	 

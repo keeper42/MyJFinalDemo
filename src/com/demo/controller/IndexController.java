@@ -1,5 +1,11 @@
 package com.demo.controller;
 
-public class IndexController {
+import com.jfinal.core.Controller;
 
+public class IndexController extends Controller {
+	
+	public void index() {
+		render("index.html");
+	}
+	
 }

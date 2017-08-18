@@ -1,10 +1,11 @@
 package com.demo.model;
 
-import com.jfinal.plugin.activerecord.Model;
+import com.demo.model.base.BaseBlog;
 
-public class Blog extends Model<Blog>{
-	
-	public static final Blog me = new Blog();
-	public static Object dao;
+/**
+ * Blog model
+ */
+@SuppressWarnings("serial")
+public class Blog extends BaseBlog<Blog>{
 	
 }
